@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>제주항공 객실훈련팀 소통 워키토키</title>
-  <!-- Tailwind CSS & Lucide Icons & Canvas Confetti -->
+  <!-- Tailwind CSS & Lucide Icons & Canvas Confetti & Supabase -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     
-    /* 플라이트산스 / Pretendard 브랜드 글씨체 적용 */
     body, button, input, select, textarea {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
       letter-spacing: -0.02em;
@@ -21,7 +21,6 @@
     .bg-jeju-orange { background-color: #FF5000; }
     .border-jeju-orange { border-color: #FF5000; }
     
-    /* Walkie Talkie Display Font */
     @font-face {
       font-family: 'DigitalFont';
       src: url('https://fonts.cdnfonts.com/s/18151/DS-DIGI.TTF') format('truetype');
@@ -31,7 +30,6 @@
       letter-spacing: 2px;
     }
 
-    /* Jar Glass Animation & Style */
     .jar-container {
       background: rgba(255, 255, 255, 0.4);
       backdrop-filter: blur(8px);
@@ -55,7 +53,6 @@
       animation: dropMarble 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* Speaker Grille Pattern */
     .speaker-grille {
       background-image: radial-gradient(#374151 20%, transparent 20%);
       background-size: 8px 8px;
@@ -66,10 +63,7 @@
 
   <!-- ==================== 1. REALISTIC WALKIE-TALKIE LOGIN SCREEN ==================== -->
   <div id="loginScreen" class="w-full max-w-md my-auto flex flex-col items-center transition-all duration-500 z-50">
-    
-    <!-- Walkie-Talkie Top Antenna & Knobs -->
     <div class="w-full flex justify-between items-end px-10 -mb-2">
-      <!-- Left Knob (Volume/Power) -->
       <div class="flex flex-col items-center">
         <div class="w-6 h-8 bg-gray-700 rounded-t-md border-b-2 border-gray-900 shadow-md flex flex-col justify-between p-0.5">
           <div class="w-full h-1 bg-gray-500 rounded"></div>
@@ -78,14 +72,12 @@
         <span class="text-[10px] font-bold text-gray-500 mt-0.5">PWR/VOL</span>
       </div>
 
-      <!-- Center Antenna -->
       <div class="flex flex-col items-center -mb-1">
         <div class="w-4 h-20 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-900 rounded-t-lg shadow-lg relative">
           <div class="w-6 h-2 bg-gray-900 rounded-full absolute -bottom-1 -left-1"></div>
         </div>
       </div>
 
-      <!-- Right Knob (Channel) -->
       <div class="flex flex-col items-center">
         <div class="w-7 h-9 bg-gray-700 rounded-t-md border-b-2 border-gray-900 shadow-md flex flex-col justify-between p-0.5">
           <div class="w-full h-1 bg-jeju-orange rounded"></div>
@@ -95,15 +87,11 @@
       </div>
     </div>
 
-    <!-- Walkie Talkie Main Body -->
     <div class="w-full bg-gray-800 rounded-3xl p-6 shadow-2xl border-4 border-gray-700 relative overflow-hidden flex flex-col items-center">
-      
-      <!-- Side PTT Button Visual Effect -->
       <div class="absolute -left-3 top-28 w-3 h-20 bg-jeju-orange rounded-l-md border-r-2 border-orange-700 shadow-md flex items-center justify-center">
         <span class="text-[9px] text-white font-bold rotate-90 tracking-tighter">PTT</span>
       </div>
 
-      <!-- Top LED Status & Frequency Indicator -->
       <div class="w-full flex justify-between items-center mb-3 px-2">
         <div class="flex items-center space-x-2">
           <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]"></div>
@@ -112,7 +100,6 @@
         <span class="text-xs font-mono text-gray-400">JEJU AIR CABIN</span>
       </div>
 
-      <!-- LCD Frequency Display Panel -->
       <div class="w-full bg-emerald-950 border-4 border-gray-900 rounded-xl p-4 shadow-inner mb-6 text-emerald-400 flex flex-col justify-between relative">
         <div class="flex justify-between items-center text-xs font-mono text-emerald-600">
           <span>SIGNAL: ▮▮▮▮█</span>
@@ -128,14 +115,12 @@
         </div>
       </div>
 
-      <!-- Speaker Grille -->
       <div class="w-full h-12 speaker-grille bg-gray-900/80 rounded-lg border border-gray-700 mb-6 flex items-center justify-center">
         <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest bg-gray-800/90 px-3 py-0.5 rounded-full border border-gray-700">
           High Quality Transceiver
         </div>
       </div>
 
-      <!-- Login Form Inside Radio Body -->
       <div class="w-full bg-gray-900/90 rounded-2xl p-5 border border-gray-700 shadow-lg">
         <h2 class="text-center text-lg font-bold text-white mb-1 flex items-center justify-center gap-2">
           <i data-lucide="radio" class="w-5 h-5 text-jeju-orange"></i>
@@ -147,7 +132,6 @@
           <div>
             <label class="block text-xs font-medium text-gray-300 mb-1">팀원 이름</label>
             <select id="loginUserSelect" required class="w-full bg-gray-800 border border-gray-600 text-white text-sm rounded-lg p-2.5 focus:ring-2 focus:ring-orange-500 outline-none">
-              <!-- Populated dynamically with default placeholder -->
             </select>
           </div>
 
@@ -163,20 +147,16 @@
         </form>
       </div>
 
-      <!-- Bottom Audio Effect Toggle -->
       <div class="mt-4 flex items-center gap-2 text-xs text-gray-400">
         <input type="checkbox" id="soundToggle" checked class="rounded accent-orange-500">
         <label for="soundToggle" class="cursor-pointer select-none">무전 송수신 효과음 활성화</label>
       </div>
-
     </div>
   </div>
 
 
   <!-- ==================== 2. MAIN APP DASHBOARD ==================== -->
   <div id="mainDashboard" class="hidden w-full max-w-5xl flex-col min-h-screen">
-    
-    <!-- Top Header -->
     <header class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
         <div class="bg-jeju-orange text-white p-2.5 rounded-xl shadow-md">
@@ -191,7 +171,6 @@
         </div>
       </div>
 
-      <!-- User Profile Badge & Actions -->
       <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-2 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
           <div class="w-7 h-7 rounded-full bg-jeju-orange text-white flex items-center justify-center font-bold text-xs" id="currentUserAvatar">
@@ -204,7 +183,6 @@
           비번 변경
         </button>
 
-        <!-- Admin Only Member Management Button -->
         <button id="adminMemberBtn" onclick="openAdminModal()" class="hidden text-xs bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-2 rounded-lg transition flex items-center gap-1">
           <i data-lucide="settings" class="w-3.5 h-3.5"></i> 팀원 관리
         </button>
@@ -215,7 +193,6 @@
       </div>
     </header>
 
-    <!-- Tab Navigation Header -->
     <nav class="bg-white rounded-xl shadow-sm border border-gray-200 p-1.5 mb-6 flex overflow-x-auto gap-1">
       <button onclick="switchTab('jar')" id="tabBtn-jar" class="tab-btn flex-1 min-w-[120px] py-2.5 px-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition">
         <i data-lucide="heart-handshake" class="w-4 h-4"></i> 감사항아리
@@ -235,11 +212,9 @@
     </nav>
 
 
-    <!-- TAB 1: 감사항아리 (Gratitude Jar) -->
+    <!-- TAB 1: 감사항아리 -->
     <div id="tabContent-jar" class="tab-content hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Interactive Animated Gratitude Jar Graphic Column -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex flex-col items-center justify-between">
           <div class="text-center mb-2">
             <h3 class="text-lg font-bold text-gray-800 flex items-center justify-center gap-2">
@@ -248,13 +223,9 @@
             <p class="text-xs text-gray-500 mt-1">우리 팀원들의 따뜻한 마음 구슬이 차곡차곡 쌓이고 있어요!</p>
           </div>
 
-          <!-- Glass Jar Visual Graphic -->
           <div class="w-full max-w-[260px] my-4 relative flex flex-col items-center">
-            <!-- Rim -->
             <div class="w-32 h-6 jar-rim shadow-sm z-10"></div>
-            <!-- Body Container -->
             <div id="jarGraphic" class="w-full h-64 jar-container relative overflow-hidden flex flex-wrap-reverse content-start p-3 gap-2 justify-center">
-              <!-- Animated Marbles Render Here -->
             </div>
           </div>
 
@@ -271,10 +242,7 @@
           </div>
         </div>
 
-        <!-- Gratitude Message Form & Feed -->
         <div class="lg:col-span-2 space-y-6">
-          
-          <!-- Input Form -->
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">
               <i data-lucide="plus-circle" class="w-5 h-5 text-jeju-orange"></i> 감사 마음 전달하기
@@ -302,7 +270,6 @@
                 <textarea id="jarText" rows="3" required placeholder="팀원에게 전하고 싶은 따뜻한 감사나 칭찬을 작성해 주세요." class="w-full text-sm border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 outline-none resize-none"></textarea>
               </div>
 
-              <!-- Photo Attachment Preview -->
               <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">사진 첨부 (선택)</label>
                 <input type="file" id="jarPhotoInput" accept="image/*" onchange="previewJarImage(this)" class="text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-jeju-orange hover:file:bg-orange-100">
@@ -320,27 +287,21 @@
             </form>
           </div>
 
-          <!-- Feed List -->
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-md font-bold text-gray-800 mb-4 flex items-center justify-between">
               <span>💌 도착한 감사 구슬 목록</span>
               <span class="text-xs text-gray-400 font-normal">최신순 정렬</span>
             </h3>
             <div id="jarFeedList" class="space-y-4 max-h-[500px] overflow-y-auto pr-1">
-              <!-- Rendered via JS -->
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
 
 
-    <!-- TAB 2: 팀원 자기소개 (Team Members Profiles) -->
+    <!-- TAB 2: 팀원 자기소개 -->
     <div id="tabContent-members" class="tab-content hidden space-y-6">
-      
-      <!-- Top Playlist & Search Bar -->
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -350,12 +311,10 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <!-- Youtube Playlist Button -->
           <a href="https://www.youtube.com/results?search_query=제주항공+객실훈련팀+추천곡+플레이리스트" target="_blank" rel="noopener noreferrer" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow flex items-center gap-2 transition">
             <i data-lucide="play-circle" class="w-4 h-4"></i> 🎧 전체 팀원 추천곡 연속 재생 (YouTube)
           </a>
 
-          <!-- Search Input -->
           <div class="relative flex-1 md:w-48">
             <input type="text" id="memberSearchInput" oninput="renderMemberCards()" placeholder="이름/MBTI 검색..." class="w-full text-xs bg-gray-100 border border-gray-200 rounded-xl pl-8 pr-3 py-2 focus:ring-2 focus:ring-orange-500 outline-none">
             <i data-lucide="search" class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5"></i>
@@ -363,17 +322,13 @@
         </div>
       </div>
 
-      <!-- Member Grid Container (16 Members) -->
       <div id="memberGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Rendered dynamically -->
       </div>
     </div>
 
 
-    <!-- TAB 3: 비밀 마니또 🎁 (Secret Manitto) -->
+    <!-- TAB 3: 비밀 마니또 🎁 -->
     <div id="tabContent-manitto" class="tab-content hidden space-y-6">
-      
-      <!-- Manitto Period & My Target Info Banner -->
       <div class="bg-gradient-to-r from-orange-500 via-amber-500 to-amber-600 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
         <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -386,7 +341,6 @@
             </p>
           </div>
 
-          <!-- My Assigned Manitto Card -->
           <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 min-w-[220px] text-center">
             <span class="text-xs text-orange-100 block mb-1">내가 수호천사가 되어줄 마니또</span>
             <div id="myManittoTargetName" class="text-2xl font-black text-yellow-200 tracking-wider">
@@ -400,10 +354,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Secret Message Send Form & Received Messages -->
         <div class="space-y-6">
-          <!-- Send Form -->
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">
               <i data-lucide="send" class="w-5 h-5 text-jeju-orange"></i> 내 마니또에게 익명 응원 보내기
@@ -418,18 +369,15 @@
             </form>
           </div>
 
-          <!-- My Manitto Inbox -->
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <h3 class="text-md font-bold text-gray-800 mb-4 flex items-center gap-2">
               <i data-lucide="inbox" class="w-5 h-5 text-amber-500"></i> 나를 위한 수호천사의 비밀 편지함
             </h3>
             <div id="manittoInboxList" class="space-y-3 max-h-80 overflow-y-auto">
-              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
 
-        <!-- Public Praise & Warm Moments Board -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex flex-col justify-between">
           <div>
             <div class="flex justify-between items-center mb-4">
@@ -442,19 +390,15 @@
             </div>
             
             <div id="manittoPhotoGallery" class="grid grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-1">
-              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
 
-    <!-- TAB 4: 자유 익명게시판 (Anonymous Forum) -->
+    <!-- TAB 4: 자유 익명게시판 -->
     <div id="tabContent-forum" class="tab-content hidden space-y-6">
-      
-      <!-- New Post Form -->
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
         <h3 class="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">
           <i data-lucide="edit-3" class="w-5 h-5 text-jeju-orange"></i> 자유로이 의견 나누기 (완전 익명)
@@ -470,22 +414,18 @@
         </form>
       </div>
 
-      <!-- Forum Posts Feed -->
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
         <h3 class="text-md font-bold text-gray-800 mb-4 flex items-center justify-between">
           <span>💬 게시글 목록</span>
           <span class="text-xs text-gray-400 font-normal">자유로운 소통 공간</span>
         </h3>
-
         <div id="forumPostList" class="space-y-6">
-          <!-- Rendered via JS -->
         </div>
       </div>
-
     </div>
 
 
-    <!-- TAB 5: 비밀 고민상담소 (Secret Counseling) -->
+    <!-- TAB 5: 비밀 고민상담소 -->
     <div id="tabContent-counsel" class="tab-content hidden space-y-6">
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
         <div class="border-b border-gray-100 pb-4 mb-6">
@@ -498,19 +438,15 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          <!-- Send Form -->
           <div class="space-y-4">
             <h3 class="text-sm font-bold text-gray-700">1:1 비밀 상담 보내기</h3>
             <form onsubmit="handleSendCounsel(event)" class="space-y-3">
               <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1">상담을 전할 대상 팀원 (수신인)</label>
                 <select id="counselTargetSelect" class="w-full text-sm border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500 outline-none">
-                  <!-- All 16 Members populated dynamically -->
                 </select>
               </div>
 
-              <!-- 익명 여부 선택 체크박스 추가 -->
               <div class="flex items-center gap-2 bg-emerald-50/60 p-2.5 rounded-lg border border-emerald-100">
                 <input type="checkbox" id="counselIsAnonymous" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 accent-emerald-600 cursor-pointer">
                 <label for="counselIsAnonymous" class="text-xs font-medium text-emerald-900 cursor-pointer select-none">
@@ -529,27 +465,20 @@
             </form>
           </div>
 
-          <!-- My Secret Inbox (Only visible if sent TO me) -->
           <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
             <h3 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
               <i data-lucide="lock" class="w-4 h-4 text-emerald-600"></i> 나에게 도착한 비밀 상담함
             </h3>
             <div id="counselInboxList" class="space-y-3 max-h-80 overflow-y-auto">
-              <!-- Rendered via JS -->
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
-
   </div>
 
 
   <!-- ==================== MODALS ==================== -->
-
-  <!-- 1. Password Change Modal -->
   <div id="passwordModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
       <h3 class="text-md font-bold text-gray-800 flex items-center gap-2">
@@ -572,7 +501,6 @@
     </div>
   </div>
 
-  <!-- 2. Admin Member Management Modal (김사라, 조제민 전용) -->
   <div id="adminModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
@@ -582,7 +510,6 @@
         <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
-      <!-- Add New Member Form -->
       <form onsubmit="handleAddMember(event)" class="flex gap-2">
         <input type="text" id="newMemberNameInput" placeholder="신규 팀원 이름" required class="flex-1 text-sm border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none">
         <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-2 rounded-lg text-xs">
@@ -590,14 +517,11 @@
         </button>
       </form>
 
-      <!-- Existing Member List -->
       <div id="adminMemberList" class="space-y-2 max-h-60 overflow-y-auto border border-gray-100 rounded-xl p-2">
-        <!-- Rendered via JS -->
       </div>
     </div>
   </div>
 
-  <!-- 3. Edit Profile Modal -->
   <div id="editProfileModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
@@ -656,14 +580,12 @@
           <textarea id="editWishToTeam" rows="2" placeholder="팀에 바라는 마음을 자유롭게 남겨주세요." class="w-full text-xs border border-gray-300 rounded-lg p-2 resize-none"></textarea>
         </div>
         
-        <!-- 동적 질문 추가 구역 -->
         <div class="border-t pt-3">
           <div class="flex justify-between items-center mb-2">
             <label class="block text-xs font-bold text-orange-600">✨ 기타 내가 답변하고 싶은 질문 추가</label>
             <button type="button" onclick="addCustomFieldInput()" class="text-[11px] bg-orange-100 hover:bg-orange-200 text-jeju-orange font-bold px-2.5 py-1 rounded-full transition">+ 항목 추가</button>
           </div>
           <div id="customFieldsContainer" class="space-y-2">
-            <!-- Dynamic Custom Q&A Inputs Render Here -->
           </div>
         </div>
 
@@ -675,7 +597,6 @@
     </div>
   </div>
 
-  <!-- 4. Manitto Photo Upload Modal -->
   <div id="manittoPhotoModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
       <h3 class="text-md font-bold text-gray-800 flex items-center gap-2">
@@ -699,18 +620,19 @@
   </div>
 
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <!-- ==================== JAVASCRIPT LOGIC (SUPABASE CONNECTED) ==================== -->
   <script>
-    // 1. Initial 16 Team Members List (Exact Match)
+    // Supabase 설정
+    const SUPABASE_URL = "https://saxiwjavzejfwpshlsab.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Z5NcIGllfRQIvu5vxEUgLg_1a7FfkON";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
     const INITIAL_MEMBERS = [
       "강신욱", "김사라", "김연희", "박민지A", "유재진", "윤준영", "오아현", "이광석",
       "이동찬", "이은비", "이지애A", "임청", "조제민", "지혜진", "한재민", "현윤선"
     ];
-
-    // Admin Users List (Only these 2 can manage members)
     const ADMIN_USERS = ["김사라", "조제민"];
 
-    // App State Management
     let state = {
       members: [],
       passwords: {},
@@ -726,7 +648,6 @@
       tempJarPhoto: null
     };
 
-    // Audio Sound Effect (Radio Beep)
     function playBeep() {
       const toggle = document.getElementById('soundToggle');
       if (toggle && !toggle.checked) return;
@@ -744,61 +665,98 @@
       } catch (e) {}
     }
 
-    // Load LocalStorage Data or Set Initial
-    function initData() {
-      const savedMembers = localStorage.getItem('ja_members');
-      state.members = savedMembers ? JSON.parse(savedMembers) : [...INITIAL_MEMBERS];
+    // Supabase 데이터 동기화 초기화 함수
+    async function initData() {
+      try {
+        let { data: appData, error } = await supabaseClient
+          .from('app_state')
+          .select('*')
+          .eq('id', 1)
+          .single();
 
-      const savedPw = localStorage.getItem('ja_pw');
-      state.passwords = savedPw ? JSON.parse(savedPw) : {};
-      state.members.forEach(m => {
-        if (!state.passwords[m]) state.passwords[m] = "0000";
-      });
-
-      const savedJar = localStorage.getItem('ja_jar');
-      state.gratitudeJar = savedJar ? JSON.parse(savedJar) : [
-        { id: 1, sender: "조제민", category: "훈련센터", target: "전체", text: "상반기 비상탈출 훈련 모의평가 무사히 마친 모든 분들 고생 많으셨습니다!", photo: "", date: "2026.09.28" },
-        { id: 2, sender: "김사라", category: "팀원 개인", target: "이지애A", text: "신입 교관 오리엔테이션 자료 깔끔하게 정돈해줘서 고마워요!", photo: "", date: "2026.09.29" }
-      ];
-
-      const savedProfiles = localStorage.getItem('ja_profiles');
-      state.profiles = savedProfiles ? JSON.parse(savedProfiles) : {};
-      state.members.forEach(m => {
-        if (!state.profiles[m]) {
-          state.profiles[m] = {
-            age: "",
-            mbti: "ENFP",
-            hometown: "",
-            residence: "",
-            food: "",
-            preciousPerson: "",
-            bookQuote: "즐겁게 교육하고 함께 성장하자!",
-            song: "DAY6 - 한 페이지가 될 수 있게",
-            wishToTeam: "",
-            customFields: [],
-            photo: ""
+        if (error || !appData) {
+          // 초기 데이터가 없으면 기본값으로 생성
+          const defaultState = {
+            id: 1,
+            members: INITIAL_MEMBERS,
+            passwords: {},
+            gratitude_jar: [
+              { id: 1, sender: "조제민", category: "훈련센터", target: "전체", text: "상반기 비상탈출 훈련 모의평가 무사히 마친 모든 분들 고생 많으셨습니다!", photo: "", date: "2026.09.28" },
+              { id: 2, sender: "김사라", category: "팀원 개인", target: "이지애A", text: "신입 교관 오리엔테이션 자료 깔끔하게 정돈해줘서 고마워요!", photo: "", date: "2026.09.29" }
+            ],
+            profiles: {},
+            manitto_msgs: [],
+            manitto_photos: [],
+            forum_posts: [
+              { id: 1, title: "훈련 교안 개정 관련 소소한 제안", content: "최근 개정된 안전 수칙 내용을 카드뉴스 형식으로 만들어 교관실 입구에 붙여두면 좋을 것 같아요!", likes: 5, comments: [], date: "2026.09.29" }
+            ],
+            counsel_msgs: []
           };
+          
+          INITIAL_MEMBERS.forEach(m => {
+            defaultState.passwords[m] = "0000";
+            defaultState.profiles[m] = {
+              age: "",
+              mbti: "ENFP",
+              hometown: "",
+              residence: "",
+              food: "",
+              preciousPerson: "",
+              bookQuote: "즐겁게 교육하고 함께 성장하자!",
+              song: "DAY6 - 한 페이지가 될 수 있게",
+              wishToTeam: "",
+              customFields: [],
+              photo: ""
+            };
+          });
+
+          await supabaseClient.from('app_state').upsert([defaultState]);
+          appData = defaultState;
         }
-      });
 
-      // Manitto Pairing Logic (Deterministic cyclic shift for simplicity)
-      generateManittoPairs();
+        state.members = appData.members || [...INITIAL_MEMBERS];
+        state.passwords = appData.passwords || {};
+        state.gratitudeJar = appData.gratitude_jar || [];
+        state.profiles = appData.profiles || {};
+        state.manittoMsgs = appData.manitto_msgs || [];
+        state.manittoPhotos = appData.manitto_photos || [];
+        state.forumPosts = appData.forum_posts || [];
+        state.counselMsgs = appData.counsel_msgs || [];
 
-      const savedMNotices = localStorage.getItem('ja_manitto_msgs');
-      state.manittoMsgs = savedMNotices ? JSON.parse(savedMNotices) : [];
+        state.members.forEach(m => {
+          if (!state.passwords[m]) state.passwords[m] = "0000";
+          if (!state.profiles[m]) {
+            state.profiles[m] = {
+              age: "", mbti: "ENFP", hometown: "", residence: "", food: "", preciousPerson: "",
+              bookQuote: "즐겁게 교육하고 함께 성장하자!", song: "DAY6 - 한 페이지가 될 수 있게",
+              wishToTeam: "", customFields: [], photo: ""
+            };
+          }
+        });
 
-      const savedMPhotos = localStorage.getItem('ja_manitto_photos');
-      state.manittoPhotos = savedMPhotos ? JSON.parse(savedMPhotos) : [];
+        generateManittoPairs();
+        populateLoginDropdown();
+      } catch (err) {
+        console.error("Supabase 로드 오류:", err);
+      }
+    }
 
-      const savedForum = localStorage.getItem('ja_forum');
-      state.forumPosts = savedForum ? JSON.parse(savedForum) : [
-        { id: 1, title: "훈련 교안 개정 관련 소소한 제안", content: "최근 개정된 안전 수칙 내용을 카드뉴스 형식으로 만들어 교관실 입구에 붙여두면 좋을 것 같아요!", likes: 5, comments: [], date: "2026.09.29" }
-      ];
-
-      const savedCounsel = localStorage.getItem('ja_counsel');
-      state.counselMsgs = savedCounsel ? JSON.parse(savedCounsel) : [];
-
-      populateLoginDropdown();
+    async function saveState() {
+      try {
+        await supabaseClient.from('app_state').upsert([{
+          id: 1,
+          members: state.members,
+          passwords: state.passwords,
+          gratitude_jar: state.gratitudeJar,
+          profiles: state.profiles,
+          manitto_msgs: state.manittoMsgs,
+          manitto_photos: state.manittoPhotos,
+          forum_posts: state.forumPosts,
+          counsel_msgs: state.counselMsgs
+        }]);
+      } catch (err) {
+        console.error("Supabase 저장 오류:", err);
+      }
     }
 
     function generateManittoPairs() {
@@ -809,22 +767,10 @@
       });
     }
 
-    function saveState() {
-      localStorage.setItem('ja_members', JSON.stringify(state.members));
-      localStorage.setItem('ja_pw', JSON.stringify(state.passwords));
-      localStorage.setItem('ja_jar', JSON.stringify(state.gratitudeJar));
-      localStorage.setItem('ja_profiles', JSON.stringify(state.profiles));
-      localStorage.setItem('ja_manitto_msgs', JSON.stringify(state.manittoMsgs));
-      localStorage.setItem('ja_manitto_photos', JSON.stringify(state.manittoPhotos));
-      localStorage.setItem('ja_forum', JSON.stringify(state.forumPosts));
-      localStorage.setItem('ja_counsel', JSON.stringify(state.counselMsgs));
-    }
-
     function populateLoginDropdown() {
       const select = document.getElementById('loginUserSelect');
       select.innerHTML = '';
 
-      // Default Placeholder
       const placeholderOpt = document.createElement('option');
       placeholderOpt.value = "";
       placeholderOpt.textContent = "본인의 이름을 클릭하세요";
@@ -840,7 +786,6 @@
       });
     }
 
-    // Handle Login Process
     function handleLogin(e) {
       e.preventDefault();
       const user = document.getElementById('loginUserSelect').value;
@@ -855,7 +800,6 @@
         playBeep();
         state.currentUser = user;
         
-        // Hide Login, Show Dashboard
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('mainDashboard').classList.remove('hidden');
         document.getElementById('mainDashboard').classList.remove('hidden');
@@ -883,7 +827,6 @@
       document.getElementById('currentUserName').textContent = state.currentUser;
       document.getElementById('currentUserAvatar').textContent = state.currentUser.charAt(0);
 
-      // Check Admin Permission (김사라, 조제민)
       const adminBtn = document.getElementById('adminMemberBtn');
       if (ADMIN_USERS.includes(state.currentUser)) {
         adminBtn.classList.remove('hidden');
@@ -893,7 +836,6 @@
     }
 
     function setupDropdowns() {
-      // Gratitude Target Dropdown
       const jarTarget = document.getElementById('jarTargetUser');
       jarTarget.innerHTML = '<option value="전체">전체 대상</option>';
       state.members.forEach(m => {
@@ -903,7 +845,6 @@
         jarTarget.appendChild(opt);
       });
 
-      // Counseling Target Dropdown (All 16 Members)
       const counselTarget = document.getElementById('counselTargetSelect');
       counselTarget.innerHTML = '';
       state.members.forEach(m => {
@@ -916,7 +857,6 @@
       });
     }
 
-    // Switch Main Tabs
     function switchTab(tabId) {
       playBeep();
       state.currentTab = tabId;
@@ -932,7 +872,6 @@
       activeBtn.classList.remove('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
       activeBtn.classList.add('bg-jeju-orange', 'text-white', 'shadow-md');
 
-      // Render tab specifics
       if (tabId === 'jar') renderJarTab();
       if (tabId === 'members') renderMemberCards();
       if (tabId === 'manitto') renderManittoTab();
@@ -941,9 +880,8 @@
     }
 
 
-    // ================= TAB 1: 감사항아리 LOGIC =================
+    // ================= TAB 1: 감사항아리 =================
     function renderJarTab() {
-      // Render Glass Jar Animated Marbles
       const jarGraphic = document.getElementById('jarGraphic');
       jarGraphic.innerHTML = '';
 
@@ -962,11 +900,9 @@
         jarGraphic.appendChild(marble);
       });
 
-      // Update Counts
       document.getElementById('jarCountTotal').textContent = state.gratitudeJar.length;
       document.getElementById('jarCountMy').textContent = state.gratitudeJar.filter(i => i.sender === state.currentUser).length;
 
-      // Render Feed List
       const feedList = document.getElementById('jarFeedList');
       feedList.innerHTML = '';
 
@@ -1012,7 +948,7 @@
       document.getElementById('jarImagePreview').classList.add('hidden');
     }
 
-    function handleAddJarMsg(e) {
+    async function handleAddJarMsg(e) {
       e.preventDefault();
       const category = document.getElementById('jarCategory').value;
       const target = document.getElementById('jarTargetUser').value;
@@ -1029,9 +965,8 @@
       };
 
       state.gratitudeJar.push(newMsg);
-      saveState();
+      await saveState();
 
-      // Trigger Confetti effect
       confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
 
       document.getElementById('jarText').value = '';
@@ -1040,7 +975,7 @@
     }
 
 
-    // ================= TAB 2: 팀원 자기소개 LOGIC =================
+    // ================= TAB 2: 팀원 자기소개 =================
     function renderMemberCards() {
       const search = (document.getElementById('memberSearchInput').value || '').toLowerCase();
       const grid = document.getElementById('memberGrid');
@@ -1058,11 +993,9 @@
         const card = document.createElement('div');
         card.className = 'bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition';
 
-        // Music Youtube Query URL
         const songQuery = encodeURIComponent(prof.song || '제주항공');
         const songUrl = `https://www.youtube.com/results?search_query=${songQuery}`;
 
-        // Dynamic Custom Fields HTML
         let customFieldsHtml = '';
         if (prof.customFields && Array.isArray(prof.customFields)) {
           prof.customFields.forEach(cf => {
@@ -1219,7 +1152,7 @@
         }
       });
 
-      const save = (photoUrl) => {
+      const save = async (photoUrl) => {
         state.profiles[state.currentUser] = {
           age: document.getElementById('editAge').value.trim(),
           mbti: document.getElementById('editMbti').value.trim(),
@@ -1233,7 +1166,7 @@
           customFields,
           photo: photoUrl || (state.profiles[state.currentUser] ? state.profiles[state.currentUser].photo : '')
         };
-        saveState();
+        await saveState();
         closeEditProfileModal();
         renderMemberCards();
       };
@@ -1248,12 +1181,11 @@
     }
 
 
-    // ================= TAB 3: 비밀 마니또 LOGIC =================
+    // ================= TAB 3: 비밀 마니또 =================
     function renderManittoTab() {
       document.getElementById('myManittoTargetName').textContent = '???';
       document.getElementById('revealBtn').classList.remove('hidden');
 
-      // Inbox for messages sent TO me
       const inbox = document.getElementById('manittoInboxList');
       inbox.innerHTML = '';
 
@@ -1275,7 +1207,6 @@
         });
       }
 
-      // Render Photo Gallery (훈훈한 순간 📸)
       const gallery = document.getElementById('manittoPhotoGallery');
       gallery.innerHTML = '';
 
@@ -1303,7 +1234,7 @@
       document.getElementById('revealBtn').classList.add('hidden');
     }
 
-    function handleSendManittoMsg(e) {
+    async function handleSendManittoMsg(e) {
       e.preventDefault();
       const target = state.manittoPairs[state.currentUser];
       const text = document.getElementById('manittoMsgInput').value;
@@ -1316,7 +1247,7 @@
         date: new Date().toISOString().split('T')[0].replace(/-/g, '.')
       });
 
-      saveState();
+      await saveState();
       alert(`내 마니또(${target})에게 비밀 응원 메시지를 전달했습니다!`);
       document.getElementById('manittoMsgInput').value = '';
       renderManittoTab();
@@ -1336,7 +1267,7 @@
 
       if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(evt) {
+        reader.onload = async function(evt) {
           state.manittoPhotos.push({
             id: Date.now(),
             sender: state.currentUser,
@@ -1344,7 +1275,7 @@
             caption,
             date: new Date().toISOString().split('T')[0].replace(/-/g, '.')
           });
-          saveState();
+          await saveState();
           closeManittoPhotoModal();
           document.getElementById('manittoPhotoCaption').value = '';
           renderManittoTab();
@@ -1354,7 +1285,7 @@
     }
 
 
-    // ================= TAB 4: 자유 익명게시판 LOGIC =================
+    // ================= TAB 4: 자유 익명게시판 =================
     function renderForumTab() {
       const list = document.getElementById('forumPostList');
       list.innerHTML = '';
@@ -1382,7 +1313,6 @@
             <span class="text-xs text-gray-400">익명 작성자</span>
           </div>
 
-          <!-- Comments Container -->
           <div class="bg-white rounded-lg p-3 border border-gray-100 space-y-2 mt-2">
             <div class="space-y-1.5 max-h-32 overflow-y-auto text-xs">
               ${(post.comments || []).map(c => `
@@ -1404,7 +1334,7 @@
       lucide.createIcons();
     }
 
-    function handleCreateForumPost(e) {
+    async function handleCreateForumPost(e) {
       e.preventDefault();
       const title = document.getElementById('forumTitleInput').value;
       const content = document.getElementById('forumContentInput').value;
@@ -1418,22 +1348,22 @@
         date: new Date().toISOString().split('T')[0].replace(/-/g, '.')
       });
 
-      saveState();
+      await saveState();
       document.getElementById('forumTitleInput').value = '';
       document.getElementById('forumContentInput').value = '';
       renderForumTab();
     }
 
-    function likeForumPost(postId) {
+    async function likeForumPost(postId) {
       const p = state.forumPosts.find(x => x.id === postId);
       if (p) {
         p.likes = (p.likes || 0) + 1;
-        saveState();
+        await saveState();
         renderForumTab();
       }
     }
 
-    function handleAddForumComment(e, postId) {
+    async function handleAddForumComment(e, postId) {
       e.preventDefault();
       const input = e.target.querySelector('input');
       const text = input.value;
@@ -1442,18 +1372,17 @@
       if (p) {
         if (!p.comments) p.comments = [];
         p.comments.push({ text, date: new Date().toISOString().split('T')[0].replace(/-/g, '.') });
-        saveState();
+        await saveState();
         renderForumTab();
       }
     }
 
 
-    // ================= TAB 5: 비밀 고민상담소 LOGIC =================
+    // ================= TAB 5: 비밀 고민상담소 =================
     function renderCounselTab() {
       const inbox = document.getElementById('counselInboxList');
       inbox.innerHTML = '';
 
-      // Messages sent TO me
       const myMsgs = state.counselMsgs.filter(c => c.target === state.currentUser);
 
       if (myMsgs.length === 0) {
@@ -1463,7 +1392,6 @@
           const card = document.createElement('div');
           card.className = 'bg-white rounded-lg p-3 border border-emerald-200 shadow-sm text-xs space-y-1';
           
-          // 익명 체크 여부에 따라 보낸 사람 이름 표시
           const senderDisplay = c.isAnonymous ? '🔒 익명의 고민 상담' : `👤 ${c.sender}님의 고민 상담`;
 
           card.innerHTML = `
@@ -1478,7 +1406,7 @@
       }
     }
 
-    function handleSendCounsel(e) {
+    async function handleSendCounsel(e) {
       e.preventDefault();
       const target = document.getElementById('counselTargetSelect').value;
       const isAnonymous = document.getElementById('counselIsAnonymous').checked;
@@ -1493,7 +1421,7 @@
         date: new Date().toISOString().split('T')[0].replace(/-/g, '.')
       });
 
-      saveState();
+      await saveState();
       alert(`${target}님에게 비밀 고민 상담 메시지를 전달했습니다.`);
       document.getElementById('counselTextInput').value = '';
       renderCounselTab();
@@ -1508,14 +1436,14 @@
       document.getElementById('passwordModal').classList.add('hidden');
     }
 
-    function handleChangePassword(e) {
+    async function handleChangePassword(e) {
       e.preventDefault();
       const curr = document.getElementById('currPinInput').value;
       const next = document.getElementById('newPinInput').value;
 
       if (state.passwords[state.currentUser] === curr) {
         state.passwords[state.currentUser] = next;
-        saveState();
+        await saveState();
         alert('비밀번호가 성공적으로 변경되었습니다!');
         closePasswordModal();
       } else {
@@ -1548,7 +1476,7 @@
       });
     }
 
-    function handleAddMember(e) {
+    async function handleAddMember(e) {
       e.preventDefault();
       const name = document.getElementById('newMemberNameInput').value.trim();
       if (!name) return;
@@ -1561,7 +1489,7 @@
       state.members.push(name);
       state.passwords[name] = "0000";
       generateManittoPairs();
-      saveState();
+      await saveState();
 
       document.getElementById('newMemberNameInput').value = '';
       renderAdminMemberList();
@@ -1569,12 +1497,12 @@
       populateLoginDropdown();
     }
 
-    function handleDeleteMember(name) {
+    async function handleDeleteMember(name) {
       if (confirm(`${name} 팀원을 명단에서 삭제하시겠습니까?`)) {
         state.members = state.members.filter(m => m !== name);
         delete state.passwords[name];
         generateManittoPairs();
-        saveState();
+        await saveState();
 
         renderAdminMemberList();
         setupDropdowns();
@@ -1582,12 +1510,10 @@
       }
     }
 
-    // Helper Utility
     function escapeHtml(str) {
       return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Initialize App
     window.addEventListener('DOMContentLoaded', () => {
       initData();
       lucide.createIcons();
