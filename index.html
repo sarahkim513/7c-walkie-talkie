@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마음 전달 시스템</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 24px;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 16px;
+        }
+
+        .section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        input[type="text"], input[type="file"], textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: #4299e1;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2b6cb0;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .card {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 1. 감사항아리 섹션 -->
+    <div class="section">
+        <h2>🏺 감사항아리</h2>
+        <div class="form-group">
+            <label for="jarMessage">감사의 마음을 남겨주세요</label>
+            <textarea id="jarMessage" placeholder="오늘 감사했던 순간을 적어보세요..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="jarImageInput">사진 첨부 (선택)</label>
+            <input type="file" id="jarImageInput" accept="image/*" onchange="previewJarImage(event)">
+            <img id="jarImagePreview" class="preview-img" alt="미리보기">
+        </div>
+        <button onclick="handleSaveJar()">감사 마음 저장하기</button>
+    </div>
+
+    <!-- 2. 프로필 카드 섹션 -->
+    <div class="section">
+        <h2>👤 프로필 카드 등록</h2>
+        <div class="form-group">
+            <label for="profileName">이름</label>
+            <input type="text" id="profileName" placeholder="이름을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label for="profileImageInput">프로필 사진</label>
+            <input type="file" id="profileImageInput" accept="image/*">
+        </div>
+        <button onclick="handleSaveProfile()">프로필 저장하기</button>
+    </div>
+
+    <!-- 3. 비밀 마니또 칭찬 섹션 -->
+    <div class="section">
+        <h2>🎁 비밀 마니또 칭찬하기</h2>
+        <div class="form-group">
+            <label for="manittoText">칭찬 메시지</label>
+            <textarea id="manittoText" placeholder="마니또에게 전달할 칭찬을 작성해보세요..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="manittoImageInput">사진 첨부 (선택)</label>
+            <input type="file" id="manittoImageInput" accept="image/*">
+        </div>
+        <button onclick="handleAddManittoPhoto()">마니또 칭찬 보내기</button>
+    </div>
+</div>
+
+<script>
+    // Supabase 설정
+    const SUPABASE_URL = 'https://saxiwjavzejfwpshlsab.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_Z5NcIGllfRQIvu5vxEUgLg_1a7FfkON';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // [핵심] Canvas 기반 이미지 압축 유틸리티 함수
+    function compressImage(file, maxWidth = 1024, quality = 0.7) {
+        return new Promise((resolve, reject) => {
+            if (!file) {
+                resolve(null);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    // 비율 유지하며 최대 크기 리사이징
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // JPEG 포맷으로 지정된 품질(quality) 압축
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressedBase64);
+                };
+                img.onerror = (error) => reject(error);
+            };
+            reader.onerror = (error) => reject(error);
+        });
+    }
+
+    // 글로벌 전역 변수: 감사항아리 압축된 이미지 DataURL 저장
+    let compressedJarImageData = null;
+
+    // 1. 감사항아리 이미지 선택 및 미리보기 (선택 즉시 압축 실행)
+    async function previewJarImage(event) {
+        const file = event.target.files[0];
+        const previewEl = document.getElementById('jarImagePreview');
+
+        if (file) {
+            try {
+                // 선택한 이미지 압축 (최대 1024px, 품질 0.7)
+                compressedJarImageData = await compressImage(file, 1024, 0.7);
+                previewEl.src = compressedJarImageData;
+                previewEl.style.display = 'block';
+            } catch (err) {
+                console.error('이미지 압축 중 오류 발생:', err);
+                alert('이미지를 처리하는 동안 오류가 발생했습니다.');
+            }
+        } else {
+            compressedJarImageData = null;
+            previewEl.style.display = 'none';
+            previewEl.src = '';
+        }
+    }
+
+    // 1-2. 감사항아리 저장
+    async function handleSaveJar() {
+        const message = document.getElementById('jarMessage').value.trim();
+
+        if (!message) {
+            alert('감사의 메시지를 입력해주세요.');
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('thanks_jar')
+                .insert([
+                    {
+                        message: message,
+                        image_data: compressedJarImageData // 압축된 Base64 전달
+                    }
+                ]);
+
+            if (error) throw error;
+
+            alert('감사 마음이 저장되었습니다!');
+            // 입력 폼 초기화
+            document.getElementById('jarMessage').value = '';
+            document.getElementById('jarImageInput').value = '';
+            document.getElementById('jarImagePreview').style.display = 'none';
+            compressedJarImageData = null;
+        } catch (err) {
+            console.error('저장 실패:', err);
+            alert('저장 중 오류가 발생했습니다.');
+        }
+    }
+
+    // 2. 프로필 카드 저장 (압축 후 DB 저장)
+    async function handleSaveProfile() {
+        const name = document.getElementById('profileName').value.trim();
+        const fileInput = document.getElementById('profileImageInput');
+        const file = fileInput.files[0];
+
+        if (!name) {
+            alert('이름을 입력해 주세요.');
+            return;
+        }
+
+        try {
+            let compressedProfileImg = null;
+            if (file) {
+                compressedProfileImg = await compressImage(file, 800, 0.7);
+            }
+
+            const { data, error } = await supabase
+                .from('profiles')
+                .insert([
+                    {
+                        name: name,
+                        profile_image: compressedProfileImg
+                    }
+                ]);
+
+            if (error) throw error;
+
+            alert('프로필이 성공적으로 저장되었습니다!');
+            document.getElementById('profileName').value = '';
+            fileInput.value = '';
+        } catch (err) {
+            console.error('프로필 저장 실패:', err);
+            alert('프로필 저장 중 오류가 발생했습니다.');
+        }
+    }
+
+    // 3. 비밀 마니또 칭찬 사진 추가 (압축 후 DB 저장)
+    async function handleAddManittoPhoto() {
+        const text = document.getElementById('manittoText').value.trim();
+        const fileInput = document.getElementById('manittoImageInput');
+        const file = fileInput.files[0];
+
+        if (!text) {
+            alert('칭찬 메시지를 입력해주세요.');
+            return;
+        }
+
+        try {
+            let compressedManittoImg = null;
+            if (file) {
+                compressedManittoImg = await compressImage(file, 1024, 0.7);
+            }
+
+            const { data, error } = await supabase
+                .from('manitto_messages')
+                .insert([
+                    {
+                        content: text,
+                        image_data: compressedManittoImg
+                    }
+                ]);
+
+            if (error) throw error;
+
+            alert('마니또 칭찬이 전송되었습니다!');
+            document.getElementById('manittoText').value = '';
+            fileInput.value = '';
+        } catch (err) {
+            console.error('마니또 메시지 전송 실패:', err);
+            alert('메시지 전송 중 오류가 발생했습니다.');
+        }
+    }
+</script>
+
+</body>
+</html>
